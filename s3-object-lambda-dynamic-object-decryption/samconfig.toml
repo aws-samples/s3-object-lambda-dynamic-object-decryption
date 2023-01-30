@@ -1,0 +1,12 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "KMSS3Lambda"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1huztzfiiv8ay"
+s3_prefix = "KMSS3Lambda"
+region = "us-east-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+disable_rollback = true
+image_repositories = []

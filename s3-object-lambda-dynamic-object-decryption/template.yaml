@@ -1,0 +1,61 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  encryptionlambda
+
+  SAM Template for encryptionlambda
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 15
+
+Resources:
+  KMSS3LambdaFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      FunctionName: KMSS3Lambda
+      Handler: lambda_function.lambda_handle
+      Layers:
+        - arn:aws:lambda:us-east-1:177933569100:layer:AWS-Parameters-and-Secrets-Lambda-Extension:2
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Action: 
+                - "s3:GetObject"
+                - "s3-object-lambda:WriteGetObjectResponse"
+              Resource:
+                - "*"
+            - Effect: "Allow"
+              Action:
+                - "secretsmanager:GetSecretValue"
+              Resource:
+                - "*"
+      Environment:
+        Variables:
+          PARAMETERS_SECRETS_EXTENSION_HTTP_PORT: 2773
+  bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: Private
+  kmss3lambdaac:
+    Type: AWS::S3::AccessPoint
+    Properties:
+      Bucket: !Ref bucket
+      Name: !Ref bucket
+      
+  kmss3lambdaolac:
+    Type: AWS::S3ObjectLambda::AccessPoint
+    Properties:
+      Name: kmss3lambdaolac
+      ObjectLambdaConfiguration:
+        SupportingAccessPoint: !GetAtt kmss3lambdaac.Arn
+        TransformationConfigurations: 
+          - Actions: ['GetObject']
+            ContentTransformation:
+              AwsLambda:
+                FunctionArn: !GetAtt KMSS3LambdaFunction.Arn
