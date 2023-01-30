@@ -49,7 +49,7 @@ Copy sample test-doc.txt in the newly created S3 bucket.
 
 ## Test the Sample
 ### Postman
-You can use Postman get request to test the sample. https://<AccessPointName>-<AccountId>.s3-object-lambda.<Region>.amazonaws.com
+You can use Postman get request to test the sample. https:// <AccessPointName> - <AccountId>.s3-object-lambda.<Region>.amazonaws.com
 ### AWS Cloudshell
   
 ### Clean up
